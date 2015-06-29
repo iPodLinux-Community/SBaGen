@@ -1323,6 +1323,10 @@ noise2() {
 //	Play loop
 //
 
+extern void ipod_init();
+extern void ipod_update();
+extern void ipod_exit();
+
 void 
 loop() {	
   int c, cnt;
@@ -1359,8 +1363,10 @@ loop() {
   dispCurrPer(stderr);	// Display
   status(0);
   
+  ipod_init();
   while (1) {
     for (c= 0; c < cnt; c++) {
+      ipod_update();
       corrVal(1);
       outChunk();
       ms_inc= out_buf_ms + err;
@@ -1370,6 +1376,8 @@ loop() {
       if (now > H24) now -= H24;
       if (vfast && (c&1)) status(0);
     }
+	// Called again since above loop isn't always active
+    ipod_update();
 
     if (fast) {
       if (!vfast) status(0);
@@ -1393,6 +1401,7 @@ loop() {
       status(buf);
     }
   }
+  ipod_exit();
 }
 
 
